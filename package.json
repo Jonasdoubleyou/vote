@@ -1,0 +1,14 @@
+{
+  "name": "vote",
+  "version": "1.0.0",
+  "description": "A simple live voting tool",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Jonas Wilms - Domus7 Internettutoriat",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
