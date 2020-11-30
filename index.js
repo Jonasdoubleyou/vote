@@ -76,8 +76,7 @@ app.post("/api/get-answers", bodyParser.json(), (req, res) => {
     return res.json({ answers });
 })
 
-const main = fs.readFileSync(__dirname + "/main.html", { encoding: "utf-8" });
 
-app.get("/", (req, res) => res.send(main));
+app.use("/", Express.static(__dirname + "/frontend"));
 
 app.listen(2000);
