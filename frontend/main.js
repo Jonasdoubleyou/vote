@@ -29,7 +29,8 @@ async function createPoll() {
     });
     const { pollid, secret } = await response.json();
 
-    window.location = POLLURL + `/?pollid=${pollid}&secret=${secret}`;
+    fetchResults(secret, pollid);
+    window.localStorage.setItem("vote", JSON.stringify({ pollid, secret }));
 }
 
 async function fetchResults(secret, pollid) {
@@ -133,8 +134,14 @@ const params = new URLSearchParams(window.location.search);
 
 if (params.has("vote")) {
     showVote(params.get("vote"));
-} else if (params.has("pollid") && params.has("secret")) {
-    fetchResults(params.get("secret"), params.get("pollid"));
+} else if (localStorage.getItem("vote")) {
+    const { pollid, secret } = JSON.parse(localStorage.getItem("vote"));
+    fetchResults(secret, pollid);
 } else {
     createPoll();
 }
+
+// TODO: Create new Poll
+// TODO: Create Poll group
+// TODO: Customize Answers
+// TODO: Error handling
