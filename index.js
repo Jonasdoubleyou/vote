@@ -8,6 +8,8 @@ const fs = require("fs");
 const pollsByID = Object.create(null);
 const pollsBySecret = Object.create(null);
 
+const pollsByGroup = Object.create(null);
+
 function getRandom() {
     return crypto.randomBytes(48).toString('hex');
 }
@@ -42,11 +44,13 @@ app.post("/api/get-result", bodyParser.json(), (req, res) => {
 });
 
 app.post("/api/create", bodyParser.json(), (req, res) => {
-    const { answers } = req.body;
+    const { answers, group } = req.body;
 
     if(!answers || !Array.isArray(answers) || answers.some(answer => typeof answer !== "string"))
         return res.status(403).send("Answers must be an array of strings");
 
+    if(Object.keys(pollsByID).length > 10000)
+        return res.status(500).send("Seems we're under attack. Please do not create new polls.");
 
     const pollid = getRandom();
     const secret = getRandom();
@@ -55,6 +59,9 @@ app.post("/api/create", bodyParser.json(), (req, res) => {
 
     for(const answer of answers)
         poll.answers[answer] = 0;
+
+    if(group)
+        pollsByGroup[group] = pollid;
 
     pollsByID[pollid] = poll;
     pollsBySecret[secret] = poll;
@@ -74,7 +81,18 @@ app.post("/api/get-answers", bodyParser.json(), (req, res) => {
     const answers = Object.keys(pollsByID[pollid].answers);
 
     return res.json({ answers });
-})
+});
+
+app.post("/api/get-group", bodyParser.json(), (req, res) => {
+    const { group } = req.body;
+    if(!group)
+        return res.status(400).send("Missing group parameter");
+
+    if(!(group in pollsByGroup))
+        return res.json({});
+
+    return res.json({ pollid: pollsByGroup[group] });
+});
 
 
 app.use("/", Express.static(__dirname + "/frontend"));

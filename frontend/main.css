@@ -1,6 +1,20 @@
 :root {
     --background: #f9a800;
+    --background2: #000000;
     --primary: #ffffff;
+}
+
+.poll-toggle {
+    all: unset;
+    background-color: var(--background2);
+    color: var(--primary);
+    position: fixed;
+    top: 75px;
+    height: 50px;
+    width: 50px;
+    right: 0px;
+    z-index: 1000001;
+    font-family: 'Courier New';
 }
 
 .poll-container {
@@ -11,11 +25,15 @@
     position: fixed;
     right: 0px;
     top: 100px;
+    width: 0%;
     max-width: 500px;
-    max-height: 500px;
     z-index: 1000000;
     font-family: 'Courier New';
+    transition: width 1s all ease;
+}
 
+.poll-container__open {
+    width: 100%;
 }
 
 .poll-link {
